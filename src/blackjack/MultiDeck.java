@@ -3,9 +3,6 @@ package blackjack;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import blackjack.Card.RANKS;
-import blackjack.Card.SUITS;
-
 /**
  * Represents a deck made up of multiple decks of playing cards.
  * 
@@ -13,11 +10,11 @@ import blackjack.Card.SUITS;
  */
 public class MultiDeck extends Deck {
     
-    public Deck() {
-        Deck(2);
+    public MultiDeck() {
+        this(2);
     }
 
-    public Deck(int numDecks) {
+    public MultiDeck(int numDecks) {
         i = 0;
         cards = new ArrayList<>(52 * numDecks);
 
@@ -29,15 +26,15 @@ public class MultiDeck extends Deck {
     }   
     
     private void addDeck() {        
-        for (RANKS rank : RANKS.values()) {
-            for (SUITS suit : SUITS.values()) {
+        for (Rank rank : Rank.values()) {
+            for (Suit suit : Suit.values()) {
                 cards.add(new Card(rank, suit));
             }
         }
     }
 
     public static void main(String[] args) {
-        Deck d = new Deck();
+        Deck d = new MultiDeck(4);
         System.out.println(d);
         System.out.println(d.hasNext());
         System.out.println(d.next());

@@ -3,8 +3,6 @@ package blackjack;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import blackjack.Card.RANKS;
-import blackjack.Card.SUITS;
 
 /**
  * Represents a deck of playing cards.
@@ -19,8 +17,8 @@ public class Deck {
         i = 0;
         cards = new ArrayList<>(52);
 
-        for (RANKS rank : RANKS.values()) {
-            for (SUITS suit : SUITS.values()) {
+        for (Rank rank : Rank.values()) {
+            for (Suit suit : Suit.values()) {
                 cards.add(new Card(rank, suit));
             }
         }
@@ -47,9 +45,9 @@ public class Deck {
     }
 
     /**
-     * Reshuffles the deck.
+     * Shuffles the deck.
      */
-    public void reshuffle() {
+    public void shuffle() {
         i = 0;
         Collections.shuffle(cards);
     }
@@ -58,11 +56,11 @@ public class Deck {
     public String toString() {
         String result = "";
 
-        for (Card c : cards.subList(1, 10)) {
+        for (Card c : cards) {
             result += "[" + c + "], ";            
         }
 
-        return result + "...";
+        return result;
     }
 
     public static void main(String[] args) {
