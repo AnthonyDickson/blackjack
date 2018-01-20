@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 /**
  * Represents a playing card.
+ * 
+ * @author Anthony Dickson.
  */
 public class Card {
     public static enum SUITS { 
