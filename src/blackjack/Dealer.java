@@ -11,7 +11,7 @@ public class Dealer extends Player {
     }
 
     @Override
-    public int getBet() {
+    public int getBet(int maxBet) {
         return 0;
     }
 

@@ -15,9 +15,10 @@ public abstract class Player {
     /**
      * Get the player's bet as requested by the manager.
      * 
+     * @param maxBet The maximum bet a player can make.
      * @return the player's bet.
      */
-    public abstract int getBet();
+    public abstract int getBet(int maxBet);
 
     /**
      * Get the player's move as requested by the manager.

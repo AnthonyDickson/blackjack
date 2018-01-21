@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
  */
 public class Manager { 
     private static enum Status { READY, STAND, BUST, WON, LOST };
+    private static final double BLACKJACK_PAYOUT = 2.5;
+    private static final double PAYOUT = 2.0;
 
     private Deck deck;
     private ArrayList<Player> players;
@@ -33,6 +35,7 @@ public class Manager {
         states = new HashMap<>();
 
         hands.put(dealer, new ArrayList<>());
+        credits.put(dealer, 0); // Used to keep track of dealer winnings/losses.
     }
 
     public void addPlayer(Player p) {
@@ -56,6 +59,7 @@ public class Manager {
         announceCards();
         checkBlackjack();
         handleMoves();
+        resolve();
     }
         
     /** Shuffle the deck. */
@@ -70,7 +74,15 @@ public class Manager {
         System.out.println("\nGetting bets...");
 
         for (Player p : players) {
-            bets.put(p, p.getBet());
+            int bet = p.getBet(credits.get(p));
+
+            if (bet > credits.get(p)) {
+                bet = credits.get(p);
+            }
+
+            bets.put(p, bet);
+            credits.put(p, credits.get(p) - bets.get(p));
+            credits.put(dealer, bet);
             System.out.println(p.getName() + " has bet " + bets.get(p) + " credit(s)!");
         }
     }
@@ -87,11 +99,13 @@ public class Manager {
     }
 
     /**
-     * Deal cards to a single player.
+     * Deal cards to a single player and marks them as ready to start playing.
      * 
      * @param p The player to deal cards to.
      */
     private void dealCards(Player p) {
+        hands.get(p).clear();
+
         for (int i = 0; i < 2; i++) {
             hands.get(p).add(deck.next());
         }
@@ -116,8 +130,9 @@ public class Manager {
             System.out.println("Dealer has a face-up ace. Checking hole card...");
 
             if (handValue(dealer) == 21) {
-                System.out.println("Dealer has blackjack!");
+                states.put(dealer, Status.WON);
                 dealerBlackjack = true;
+                System.out.println("Dealer has blackjack!");
             }
         }
 
@@ -126,20 +141,35 @@ public class Manager {
                 states.put(p, Status.WON);
 
                 if (dealerBlackjack) {
-                    System.out.println("Standoff!");
-                    credits.put(p, credits.get(p) + bets.get(p));
+                    push(p);
                 } else {
-                    int amount = (int)(1.5 * bets.get(p));
-                    credits.put(p, credits.get(p) + amount);                
+                    win(p, (int)(BLACKJACK_PAYOUT * bets.get(p)));
                     System.out.println(p.getName() + " has blackjack!");
-                    System.out.println(p.getName() + " has won " + amount + " credit(s)!");
                 }
             } else if (dealerBlackjack) {
-                states.put(p, Status.LOST);
-                System.out.println(p.getName() + " has lost.");
+                lose(p);
             }          
         }
     }
+
+	private void win(Player p, int amount) {
+        states.put(p, Status.WON);
+        credits.put(p, credits.get(p) + amount);
+        credits.put(dealer, credits.get(dealer) - amount);                
+        System.out.println(p.getName() + " has won " + amount + " credits!");
+	}
+
+	private void lose(Player p) {
+		states.put(p, Status.LOST);
+        System.out.println(p.getName() + " has lost.");
+	}
+
+	private void push(Player p) {
+		credits.put(dealer, credits.get(dealer) - bets.get(p));
+		credits.put(p, credits.get(p) + bets.get(p));
+        System.out.println("Push!");
+        System.out.println(p.getName() + " is returned their bet of " + bets.get(p) + " credits.");
+	}
 
     /**
      * Handle moves for each player in sequence and then the dealer.
@@ -206,6 +236,7 @@ public class Manager {
      * @param p The player that will double down.
      */
     private void doubleDown(Player p) {
+        credits.put(p, credits.get(p) - bets.get(p));
         bets.put(p, 2 * bets.get(p));
         System.out.println(p.getName() + " doubles down and raises their bet" + 
                            " to " + bets.get(p) + " credits.");
@@ -213,6 +244,28 @@ public class Manager {
 
         if (states.get(p) != Status.BUST) {
             stand(p);
+        }
+    }
+
+    /**
+     * Resolve the current round of blackjack.
+     * 
+     */
+    private void resolve() {
+        int dealerHandValue = handValue(dealer);
+
+        for (Player p : players) {
+            if (states.get(p) == Status.STAND) {
+                int playerHandValue = handValue(p);
+                
+                if (playerHandValue > dealerHandValue) {
+                    win(p, (int)(PAYOUT * bets.get(p)));
+                } else if (playerHandValue < dealerHandValue) {
+                    lose(p);
+                } else {
+                    push(p);
+                }
+            }
         }
     }
 
