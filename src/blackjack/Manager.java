@@ -3,6 +3,7 @@ package blackjack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import java.util.Scanner;
 
 /**
  * Manager for a game of blackjack.
@@ -12,9 +13,11 @@ import java.util.stream.Collectors;
 public class Manager { 
     private static final double BLACKJACK_PAYOUT = 2.5;
     private static final double PAYOUT = 2.0;
-    private static final boolean SILENT_MODE = true; // Suppresses output to stdout.
     // TESTING
-    private static final int NUM_TESTS = 100;
+    private static final int NUM_TESTS = 1000000;
+    private static final boolean DEBUG = true;
+    private static boolean silentMode = false; // Suppresses output to stdout.
+    private static Scanner scanner = new Scanner(System.in);
 
     private Deck deck;
     private ArrayList<Player> players;
@@ -26,7 +29,7 @@ public class Manager {
     private HashMap<Player, Status> states; 
 
     private static void print(String msg) {
-        if (!SILENT_MODE) {
+        if (!silentMode) {
             System.out.println(msg);
         }
     }
@@ -37,7 +40,16 @@ public class Manager {
      * @see Manager.addPlayer(Player p)
      */
     public Manager() {
-        deck = new MultiDeck(4);
+        this(4);
+    }
+
+    /** 
+     * Set up a game of blackjack.
+     * Players also need to be added with addPlayer()
+     * @see Manager.addPlayer(Player p)
+     */
+    public Manager(int numDecks) {
+        deck = new MultiDeck(numDecks);
         players = new ArrayList<>();
         dealer = new Dealer(this);
         hands = new HashMap<>();
@@ -62,12 +74,39 @@ public class Manager {
         credits.put(p, 1000);
         print(p.getName() + " has joined the game!");
     }
+    
+    /** Warmup the AI. */
+    public void warmup() {
+        print("Warming up AI players...");
+        silentMode = true;
+        int i = 0;
+        
+        while (i++ < NUM_TESTS) {
+            shuffle();
+            getBets();
+            dealCards();
+            checkBlackjack();
+            handleMoves();
+            resolve();
+        }
 
+        if (DEBUG) printStats();
+        
+        for (Player p : players) {
+            credits.put(p, 1000);
+            p.resetWinLoss();
+        }
+
+        credits.put(dealer, 0);
+
+        silentMode = false;
+    }
+    
     /** Starts a game of blackjack. */
     public void play() {
-        int i = 0;
+        String response = "y";
 
-        while (i++ < NUM_TESTS) {
+        while ((response.equals("y") || response.equals("yes"))) {
             print("\nStarting a new round of blackjack...");
             shuffle();
             getBets();
@@ -76,6 +115,9 @@ public class Manager {
             checkBlackjack();
             handleMoves();
             resolve();
+
+            print("Do you wish to play again? (y/n):");
+            response = scanner.nextLine();
         }
 
         printStats();
@@ -276,8 +318,8 @@ public class Manager {
         
         if (handValue(p) > 21) {
             print(p.getName() + " has gone bust.");
-            states.put(p, Status.BUST);
             lose(p);
+            states.put(p, Status.BUST);
         }
     }
 
@@ -294,7 +336,7 @@ public class Manager {
         bets.put(p, 2 * bets.get(p));
         hit(p);
 
-        if (states.get(p) != Status.BUST) {
+        if (states.get(p) == Status.READY) {
             stand(p);
         }
     }
@@ -331,6 +373,10 @@ public class Manager {
 
         for (Player p : players) {
             System.err.println(p.getName() + "'s win ratio: " + p.getWinRatio());
+
+            if (p instanceof WizardOfOdds && DEBUG) {
+                System.err.print(p);
+            }
         }
     }
 

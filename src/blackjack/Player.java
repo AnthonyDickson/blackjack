@@ -54,6 +54,12 @@ public abstract class Player {
     public double getWinRatio() {
         return (double) wins / (wins + losses);
     }
+
+    /** Reset win/losses */
+    public void resetWinLoss() {
+        wins = 0;
+        losses = 0;
+    }
     
     /**
      * Get the player's name.
