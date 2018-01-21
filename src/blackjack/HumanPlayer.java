@@ -1,6 +1,7 @@
 package blackjack;
 
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 /**
  * A human controlled player in a game of blackjack.
@@ -23,11 +24,16 @@ public class HumanPlayer extends Player {
     @Override
     public int getBet(int maxBet) {
         int bet = Integer.MAX_VALUE;
-        System.out.print("Enter your bet (max=" + maxBet + "): ");
-
-        while (bet < 1 || bet > maxBet) {
-            bet = in.nextInt();
-        }
+    
+        do {
+            try {
+                System.out.print("Enter your bet (max=" + maxBet + "): ");
+                bet = in.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Bet must be a whole number.");
+                in.nextLine(); // Clear the buffer.
+            }
+        } while (bet < 1 || bet > maxBet);
 
         return bet;
     }

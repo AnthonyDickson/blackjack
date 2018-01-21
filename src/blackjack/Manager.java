@@ -14,8 +14,8 @@ public class Manager {
     private static final double BLACKJACK_PAYOUT = 2.5;
     private static final double PAYOUT = 2.0;
     // TESTING
-    private static final int NUM_TESTS = 1000000;
-    private static final boolean DEBUG = true;
+    private static final int NUM_TESTS = 100000;
+    private static final boolean DEBUG = false;
     private static boolean silentMode = false; // Suppresses output to stdout.
     private static Scanner scanner = new Scanner(System.in);
 
@@ -115,6 +115,12 @@ public class Manager {
             checkBlackjack();
             handleMoves();
             resolve();
+
+            for (Player p : players) {
+                if (credits.get(p) == 0) {
+                    // TODO: Remove players, end game if player runs out.
+                }
+            }
 
             print("Do you wish to play again? (y/n):");
             response = scanner.nextLine();

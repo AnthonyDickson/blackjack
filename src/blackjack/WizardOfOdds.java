@@ -1,6 +1,7 @@
 package blackjack;
 
 import java.util.*;
+import java.io.*;
 
 /**
  * An AI controlled player in a game of blackjack.
@@ -8,10 +9,12 @@ import java.util.*;
  * 
  * @author Anthony Dickson
  */
-public class WizardOfOdds extends Player {
-    private static Map<State, State> states = new HashMap<>();
-    private static Map<State, Move> moves = new HashMap<>();
-    // TODO: Save states to file.
+public class WizardOfOdds extends Player implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static final String OUT_FILE = "training.dat";
+    private long nTests; 
+    private Map<State, State> states = new HashMap<>();
+    private Map<State, Move> moves = new HashMap<>();
 
     public WizardOfOdds(Manager m) {
         super(m);
@@ -35,6 +38,8 @@ public class WizardOfOdds extends Player {
      * @return the player's move.
      */
     public Move getMove() {
+        nTests++;
+
         Move move = Move.STAND;
         State state = new State(m.handValue(this), m.isHandSoft(this), m.getDealerCard().getValue());
 
@@ -94,7 +99,8 @@ public class WizardOfOdds extends Player {
 
     @Override
     public String toString() {
-        String result = "Num states: " + states.size() + "\n";
+        String result = "Num states: " + states.size() + " Num tests: " + 
+                        nTests + "\n";
 
         for (Map.Entry<State, State> e : states.entrySet()) {
             result = result + e.getValue() + "\n";
@@ -102,12 +108,50 @@ public class WizardOfOdds extends Player {
 
         return result;
     }
+    
+    /** Save state to file. */
+    public void save() {
+        try {
+            FileOutputStream fos = new FileOutputStream(OUT_FILE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+            oos.close();        
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /** 
+     * Load state from file. 
+     * 
+     * @return The instance loaded from file.WizardOfOdds
+     */
+    public void load() {
+        try {
+            FileInputStream fis = new FileInputStream(OUT_FILE);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            WizardOfOdds result = (WizardOfOdds) ois.readObject();
+            ois.close();
+            
+            this.nTests = result.nTests;
+            this.states = result.states;
+		} catch (FileNotFoundException e) {
+            // e.printStackTrace();
+            System.err.println("AI training data could not be found.");
+		} catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+    }
 
     /**
      * Represents a soft/hard hand of a given value, and the probabilities
      * of winning with a given move.
      */
-    private class State {
+    private class State implements Serializable {
         static final int MIN_TRIALS = 30;
 
         int handValue, dealerValue;

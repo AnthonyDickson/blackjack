@@ -11,6 +11,10 @@ public abstract class Player {
     String name;
     int wins;
     int losses;
+
+    public Player() {
+        m = null;
+    }
     
     public Player(Manager m) {
         this.m = m;
