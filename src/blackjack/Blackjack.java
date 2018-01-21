@@ -6,7 +6,7 @@ package blackjack;
  */
 public class Blackjack {
    public static void main(String[] args) {
-       Manager m = new Manager(1);
+       Manager m = new Manager();
        m.addPlayer(new WizardOfOdds(m));
        m.warmup();
 

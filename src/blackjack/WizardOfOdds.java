@@ -36,7 +36,7 @@ public class WizardOfOdds extends Player {
      */
     public Move getMove() {
         Move move = Move.STAND;
-        State state = new State(m.handValue(this), m.isHandSoft(this));
+        State state = new State(m.handValue(this), m.isHandSoft(this), m.getDealerCard().getValue());
 
         if (states.containsKey(state)) {
             state = states.get(state);
@@ -110,7 +110,7 @@ public class WizardOfOdds extends Player {
     private class State {
         static final int MIN_TRIALS = 30;
 
-        int handValue;
+        int handValue, dealerValue;
         boolean handSoft;
         // Number of wins for a given move from this state.
         int hit, doubleDown, stand;
@@ -119,9 +119,10 @@ public class WizardOfOdds extends Player {
         // Total number of moves made from this state.
         int total;
 
-        public State(int handValue, boolean handSoft) {
+        public State(int handValue, boolean handSoft, int dealerValue) {
             this.handValue = handValue;
             this.handSoft = handSoft;
+            this.dealerValue = dealerValue;
         }
 
         public double h(Move move) {
@@ -179,7 +180,8 @@ public class WizardOfOdds extends Player {
         @Override
         public boolean equals(Object other) {
             return this.handValue == ((State) other).handValue && 
-                   this.handSoft == ((State) other).handSoft;
+                   this.handSoft == ((State) other).handSoft &&
+                   this.dealerValue == ((State) other).dealerValue;
         }
 
         @Override
@@ -187,17 +189,18 @@ public class WizardOfOdds extends Player {
             int hash = 7;
             hash = 31 * hash + handValue;
             hash = 31 * hash + ((handSoft) ? 0 : 137);
+            hash = 31 * hash + dealerValue;
 
             return hash;
         }
 
         @Override
         public String toString() {
-            return String.format("State: %2d%s\ttotal: %4d" + 
+            return String.format("State: %2d%s%2d\ttotal: %4d" + 
                 "\thit: %.3f (%.2f, %.2f) (%5d, %5d)" + 
                 "\tdouble: %.3f (%.2f, %.2f) (%5d,%5d) " + 
                 "\tstand: %.3f (%.2f, %.2f) (%5d,%5d)", 
-                handValue, (handSoft) ? "s" : "h", total,
+                handValue, (handSoft) ? "s" : "h", dealerValue, total,
                 h(Move.HIT), exploitation(Move.HIT), exploration(Move.HIT), hit, nHit, 
                 h(Move.DOUBLE), exploitation(Move.DOUBLE), exploration(Move.DOUBLE), doubleDown, nDoubleDown, 
                 h(Move.STAND), exploitation(Move.STAND), exploration(Move.STAND), stand, nStand); 
