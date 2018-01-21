@@ -95,7 +95,7 @@ public class Manager {
         for (int i = 0; i < 2; i++) {
             hands.get(p).add(deck.next());
         }
-        
+
         states.put(p, Status.READY);
     }
 
@@ -152,6 +152,11 @@ public class Manager {
         handleMoves(dealer);
     }
 
+    /**
+     * Handle the moves for a given player until they stand or go bust.
+     * 
+     * @param p The player whose moves should be handled.
+     */
     private void handleMoves(Player p) {
         while (states.get(p) == Status.READY) {
             Move move = p.getMove();
@@ -166,11 +171,23 @@ public class Manager {
         }
     }
     
+    /**
+     * The given player stands and will no longer be able to take anymore 
+     * action for the rest of this round.
+     * 
+     * @param p The player that will stand.
+     */
     private void stand(Player p) {
         states.put(p, Status.STAND);
         System.out.println(p.getName() + " stands on " + handValue(p));                        
     }
     
+    /**
+     * The given player hits, receiving another card; the player goes bust
+     * if the new total of their hand exceeds 21.
+     * 
+     * @param p The player that will hit.
+     */
     private void hit(Player p) {
         Card next = deck.next();
         hands.get(p).add(next);
@@ -182,6 +199,12 @@ public class Manager {
         }
     }
 
+    /**
+     * The given player doubles down, doubling their bet, drawing one and 
+     * only one more card, and is forced to stand.
+     * 
+     * @param p The player that will double down.
+     */
     private void doubleDown(Player p) {
         bets.put(p, 2 * bets.get(p));
         System.out.println(p.getName() + " doubles down and raises their bet" + 
