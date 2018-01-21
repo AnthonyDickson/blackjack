@@ -12,11 +12,11 @@ public class Dealer extends Player {
 
     @Override
     public int getBet(int maxBet) {
-        return 0;
+        return 0; // Dealers do not bet.
     }
 
     @Override
     public Move getMove() {
-        return Move.STAND;
+        return (m.handValue(this) < 17) ? Move.HIT : Move.STAND;
     }
 }
