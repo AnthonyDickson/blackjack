@@ -8,7 +8,7 @@ public class Blackjack {
    public static void main(String[] args) {
        Manager m = new Manager();
        m.addPlayer(new HumanPlayer(m));
-       m.addPlayer(new AIPlayer(m));
+       m.addPlayer(new RandomMove(m));
        m.play();
    }    
 }

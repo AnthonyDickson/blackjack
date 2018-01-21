@@ -4,8 +4,10 @@ import java.util.Random;
 
 /**
  * An AI controlled player in a game of blackjack.
+ * 
+ * @author Anthony Dickson
  */
-public class AIPlayer extends Player {
+public abstract class AIPlayer extends Player {
     static String[] names = { 
         "Aaron Campbell", 
         "Harold	Flores",
@@ -25,15 +27,5 @@ public class AIPlayer extends Player {
         super(m);
 
         this.name = names[r.nextInt(names.length)];
-    }
-
-    @Override
-    public int getBet(int maxBet) {
-        return 0;
-    }
-
-    @Override
-    public Move getMove() {
-        return Move.STAND;
     }
 }

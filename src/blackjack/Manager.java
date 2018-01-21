@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 /**
  * Manager for a game of blackjack.
+ * 
+ * @author Anthony Dickson
  */
 public class Manager { 
     private static enum Status { READY, STAND, BUST, WON, LOST };
@@ -179,7 +181,11 @@ public class Manager {
             handleMoves(p);
         }
 
-        handleMoves(dealer);
+        if (states.containsValue(Status.STAND)) {
+            handleMoves(dealer);
+        } else {
+            System.out.println("The dealer has won!");
+        }
     }
 
     /**

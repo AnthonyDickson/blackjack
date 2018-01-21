@@ -2,6 +2,8 @@ package blackjack;
 
 /**
  * A dealer in a game of blackjack.
+ * 
+ * @author Anthony Dickson
  */
 public class Dealer extends Player {
     public Dealer(Manager m) {

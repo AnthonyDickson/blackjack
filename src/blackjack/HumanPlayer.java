@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 /**
  * A human controlled player in a game of blackjack.
+ * 
+ * @author Anthony Dickson.
  */
 public class HumanPlayer extends Player {
     private static Scanner in = new Scanner(System.in);

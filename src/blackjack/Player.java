@@ -2,6 +2,8 @@ package blackjack;
 
 /**
  * A Player in a game of blackjack.
+ * 
+ * @author Anthony Dickson
  */
 public abstract class Player {
     final Manager m;
