@@ -8,8 +8,7 @@ import java.util.stream.Collectors;
  * Manager for a game of blackjack.
  */
 public class Manager { 
-    public static enum Move { SURRENDER, STAND, HIT, SPLIT, DOUBLE_DOWN };
-    public static enum Status { READY, STAND, BUST, WON };
+    private static enum Status { READY, STAND, BUST, WON };
 
     private Deck deck;
     private ArrayList<Player> players;
@@ -17,7 +16,7 @@ public class Manager {
     private HashMap<Player, ArrayList<Card>> hands;
     private HashMap<Player, Integer> bets;
     private HashMap<Player, Integer> credits;
-    private HashMap<Player, Status> statuses; 
+    private HashMap<Player, Status> states; 
 
     /** 
      * Set up a game of blackjack.
@@ -31,7 +30,7 @@ public class Manager {
         hands = new HashMap<>();
         bets = new HashMap<>();
         credits = new HashMap<>();
-        state = new HashMap<>();
+        states = new HashMap<>();
 
         hands.put(dealer, new ArrayList<>());
     }
@@ -57,10 +56,7 @@ public class Manager {
             dealCards();
             announceCards();
             checkBlackjack();
-            // for (Player p : players) {
-                //     Move move = p.getMove();
-                // }            
-        // }
+            handlePlayerMoves();
     }
         
     /** Shuffle the deck. */
@@ -77,7 +73,7 @@ public class Manager {
         for (Player p : players) {
             bets.put(p, p.getBet());
             System.out.println(p.getName() + " has bet " + bets.get(p) + " credit(s)!");
-            statuses.put(p, Status.READY);
+            states.put(p, Status.READY);
         }
     }
     
@@ -105,8 +101,7 @@ public class Manager {
 
     /** Announce each player's hand, and the dealer's first card. */
     private void announceCards() {
-        System.out.println("The dealer has: " + hands.get(dealer).get(0));
-        System.out.println("Here are the player's hands:");
+        System.out.println("The dealer has: [" + hands.get(dealer).get(0) + ", ...]");
 
         for (Player p : players) {
             System.out.println(p.getName() + " has: " + hands.get(p));
@@ -128,7 +123,7 @@ public class Manager {
 
         for (Player p : players) {
             if (handValue(p) == 21) {
-                statuses.put(p, Status.WON);
+                states.put(p, Status.WON);
 
                 if (dealerBlackjack) {
                     System.out.println("Standoff!");
@@ -140,9 +135,56 @@ public class Manager {
                     System.out.println(p.getName() + " has won " + amount + " credit(s)!");
                 }
             } else if (dealerBlackjack) {
-                statuses.put(p, Status.BUST);
+                states.put(p, Status.BUST);
                 System.out.println(p.getName() + " has lost " + bets.get(p) + " credit(s).");
             }          
+        }
+    }
+
+    /**
+     * Handle moves for each player in sequence until all players have 
+     * stood or gone bust.
+     */
+    private void handlePlayerMoves() {
+        for (Player p : players) {
+            while (states.get(p) == Status.READY) {
+                Move move = p.getMove();
+
+                if (move == Move.STAND) {
+                    stand(p);
+                } else if (move == Move.HIT) {
+                    hit(p);
+                } else if (move == Move.DOUBLE) {
+                    doubleDown(p);
+                }
+            }
+        }
+    }
+    
+    private void stand(Player p) {
+        states.put(p, Status.STAND);
+        System.out.println(p.getName() + " stands on " + handValue(p));                        
+    }
+    
+    private void hit(Player p) {
+        Card next = deck.next();
+        hands.get(p).add(next);
+        System.out.println(p.getName() + " hits and gets: " + next);
+        
+        if (handValue(p) > 21) {
+            states.put(p, Status.BUST);
+            System.out.println(p.getName() + " has gone bust.");
+        }
+    }
+
+    private void doubleDown(Player p) {
+        bets.put(p, 2 * bets.get(p));
+        System.out.println(p.getName() + " doubles down and raises their bet" + 
+                           " to " + bets.get(p) + " credits.");
+        hit(p);
+
+        if (states.get(p) != Status.BUST) {
+            stand(p);
         }
     }
 

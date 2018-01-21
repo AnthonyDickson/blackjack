@@ -1,7 +1,5 @@
 package blackjack;
 
-import blackjack.Manager.MOVES;
-
 /**
  * A Player in a game of blackjack.
  */
@@ -26,7 +24,7 @@ public abstract class Player {
      * 
      * @return the player's move.
      */
-    public abstract MOVES getMove();
+    public abstract Move getMove();
 
     /**
      * Get the player's name.

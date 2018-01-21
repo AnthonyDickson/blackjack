@@ -1,7 +1,5 @@
 package blackjack;
 
-import blackjack.Manager.MOVES;
-
 /**
  * A dealer in a game of blackjack.
  */
@@ -18,7 +16,7 @@ public class Dealer extends Player {
     }
 
     @Override
-    public MOVES getMove() {
-        return MOVES.STAND;
+    public Move getMove() {
+        return Move.STAND;
     }
 }

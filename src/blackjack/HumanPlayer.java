@@ -1,13 +1,9 @@
 package blackjack;
 
-import blackjack.Manager.MOVES;
-
 /**
  * A human controlled player in a game of blackjack.
  */
 public class HumanPlayer extends Player {
-    String name;    
-
     public HumanPlayer(Manager m) {
         this(m, "Player");
     }
@@ -24,7 +20,7 @@ public class HumanPlayer extends Player {
     }
 
     @Override
-    public MOVES getMove() {
-        return MOVES.STAND;
+    public Move getMove() {
+        return Move.STAND;
     }
 }

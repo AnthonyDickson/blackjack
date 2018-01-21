@@ -2,8 +2,6 @@ package blackjack;
 
 import java.util.Random;
 
-import blackjack.Manager.MOVES;
-
 /**
  * An AI controlled player in a game of blackjack.
  */
@@ -35,7 +33,7 @@ public class AIPlayer extends Player {
     }
 
     @Override
-    public MOVES getMove() {
-        return MOVES.STAND;
+    public Move getMove() {
+        return Move.STAND;
     }
 }
