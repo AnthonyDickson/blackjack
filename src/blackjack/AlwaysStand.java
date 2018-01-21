@@ -2,7 +2,7 @@ package blackjack;
 
 /**
  * An AI controlled player in a game of blackjack. 
- * This AI player always doubles down.
+ * This AI player always stands.
  * 
  * @author Anthony Dickson.
  */
@@ -18,6 +18,6 @@ public class AlwaysDouble extends AIPlayer {
 
     @Override
     public Move getMove() {
-        return Move.DOUBLE;
+        return Move.STAND;
     }
 }

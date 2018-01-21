@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
  * @author Anthony Dickson
  */
 public class Manager { 
-    private static enum Status { READY, STAND, BUST, WON, LOST };
     private static final double BLACKJACK_PAYOUT = 2.5;
     private static final double PAYOUT = 2.0;
 
@@ -274,6 +273,8 @@ public class Manager {
                     push(p);
                 }
             }
+
+            p.sendResult(states.get(p));
         }
     }
 
