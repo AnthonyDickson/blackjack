@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
  * Manager for a game of blackjack.
  */
 public class Manager { 
-    private static enum Status { READY, STAND, BUST, WON };
+    private static enum Status { READY, STAND, BUST, WON, LOST };
 
     private Deck deck;
     private ArrayList<Player> players;
@@ -56,7 +56,7 @@ public class Manager {
             dealCards();
             announceCards();
             checkBlackjack();
-            handlePlayerMoves();
+            handleMoves();
     }
         
     /** Shuffle the deck. */
@@ -135,28 +135,33 @@ public class Manager {
                     System.out.println(p.getName() + " has won " + amount + " credit(s)!");
                 }
             } else if (dealerBlackjack) {
-                states.put(p, Status.BUST);
-                System.out.println(p.getName() + " has lost " + bets.get(p) + " credit(s).");
+                states.put(p, Status.LOST);
+                System.out.println(p.getName() + " has lost.");
             }          
         }
     }
 
     /**
-     * Handle moves for each player in sequence until all players have 
-     * stood or gone bust.
+     * Handle moves for each player in sequence and then the dealer.
      */
-    private void handlePlayerMoves() {
+    private void handleMoves() {
         for (Player p : players) {
-            while (states.get(p) == Status.READY) {
-                Move move = p.getMove();
+            handleMoves(p);
+        }
 
-                if (move == Move.STAND) {
-                    stand(p);
-                } else if (move == Move.HIT) {
-                    hit(p);
-                } else if (move == Move.DOUBLE) {
-                    doubleDown(p);
-                }
+        handleMoves(dealer);
+    }
+
+    private void handleMoves(Player p) {
+        while (states.get(p) == Status.READY) {
+            Move move = p.getMove();
+
+            if (move == Move.STAND) {
+                stand(p);
+            } else if (move == Move.HIT) {
+                hit(p);
+            } else if (move == Move.DOUBLE) {
+                doubleDown(p);
             }
         }
     }
