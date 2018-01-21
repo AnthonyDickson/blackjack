@@ -10,11 +10,12 @@ import java.util.stream.Collectors;
 public class Manager { 
     public static enum MOVES { SURRENDER, STAND, HIT, SPLIT, DOUBLE_DOWN };
 
-    Deck deck;
-    ArrayList<Player> players;
-    HashMap<Player, ArrayList<Card>> hands;
-    HashMap<Player, Integer> bets;
-    HashMap<Player, Integer> scores;
+    private Deck deck;
+    private ArrayList<Player> players;
+    private Dealer dealer;
+    private HashMap<Player, ArrayList<Card>> hands;
+    private HashMap<Player, Integer> bets;
+    private HashMap<Player, Integer> scores;
 
     /** 
      * Set up a game of blackjack.
@@ -24,11 +25,12 @@ public class Manager {
     public Manager() {
         deck = new MultiDeck(4);
         players = new ArrayList<>();
+        dealer = new Dealer(this);
         hands = new HashMap<>();
         bets = new HashMap<>();
         scores = new HashMap<>();
 
-        addPlayer(new Dealer(this));
+        hands.put(dealer, new ArrayList<>());
     }
 
     public void addPlayer(Player p) {
@@ -41,26 +43,64 @@ public class Manager {
 
     /** Starts a game of blackjack. */
     public void play() {
-        deck.shuffle();
-        getBets();
-        dealCards();
-        
-        // for (Player p : players) {
-        //     MOVES move = p.getMove();
+        // while (true) {
+            System.out.println("\nStarting a new round of blackjack...");
+            shuffle();
+            getBets();
+            dealCards();
+            announceCards();
+            // for (Player p : players) {
+                //     MOVES move = p.getMove();
+                // }            
         // }
     }
+        
+    /** Shuffle the deck. */
+    private void shuffle() {
+        System.out.println("\nShuffling deck...");
 
+        deck.shuffle();
+    }
+
+    /** Get each players bet for each player. */
     private void getBets() {
+        System.out.println("\nGetting bets...");
+
         for (Player p : players) {
             bets.put(p, p.getBet());
+            System.out.println(p.getName() + " has bet " + bets.get(p) + " credits!");
+        }
+    }
+    
+    /** Deal cards to each player. */
+    private void dealCards() {
+        System.out.println("\nDealing cards...");
+        
+        dealCards(dealer);
+
+        for (Player p : players) {
+            dealCards(p);
         }
     }
 
-    private void dealCards() {
+    /**
+     * Deal cards to a single player.
+     * 
+     * @param p The player to deal cards to.
+     */
+    private void dealCards(Player p) {
+        for (int i = 0; i < 2; i++) {
+            hands.get(p).add(deck.next());
+        }
+    }
+
+    /** Announce each player's hand, and the dealer's first card. */
+    private void announceCards() {
+        System.out.println("The dealer has: " + hands.get(dealer).get(0));
+        System.out.println("Here are the player's hands:");
+
         for (Player p : players) {
-            for (int i = 0; i < 2; i++) {
-                hands.get(p).add(deck.next());
-            }
+            System.out.println(p.getName() + " has: " + hands.get(p));
         }
     }
 
@@ -76,17 +116,26 @@ public class Manager {
 
     /**
      * Computes the value of a hand of the given player. 
-     * Counts aces as being worth one. The player class should decide whether 
-     * or not they want to 'promote' an ace to 11 points.
+     * Aces count as one by default unless the player signals they wish to 
+     * count one of their aces as eleven.
      * 
      * @param p The player whose hand we should compute the value of.
      * @return The min value of the players hand.
      */
     public int handValue(Player p) {
         int value = 0;
-        
+        boolean hasAce = false;
+
         for (Card c : hands.get(p)) {
-            value += c.getValue();            
+            value += c.getValue();
+
+            if (c.getRank() == Rank.ACE) {
+                hasAce = true;
+            }
+        }        
+
+        if (hasAce && p.promotesAce(value)) {
+            value += 10;
         }
 
         return value;
@@ -102,24 +151,11 @@ public class Manager {
         int max = -1;
 
         for (Player p : players) {
-            int value = handValue(p);
-
-            if (hasAce(p) && p.promotesAce(value)) {
-                value += 10;
-            }
-
-            if (value > max) {
+            if (handValue(p) > max) {
                 winner = p;
             }
         }
 
         return winner;
-    }
-
-    private boolean hasAce(Player p) {
-        return getHand(p).stream()
-            .filter((c) -> c.getRank() == Rank.ACE)
-            .collect(Collectors.toList())
-            .size() > 0;
     }
 }
