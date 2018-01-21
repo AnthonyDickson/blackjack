@@ -21,7 +21,7 @@ public abstract class AIPlayer extends Player {
         "Jason Bell"
     };
 
-    static Random r = new Random(2018);
+    static Random r = new Random();
 
     public AIPlayer(Manager m) {
         super(m);

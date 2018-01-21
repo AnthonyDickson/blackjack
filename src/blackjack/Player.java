@@ -39,7 +39,11 @@ public abstract class Player {
      * @param result The result of the last round.
      */
     public void sendResult(Status result) {
-        
+        if (result == Status.WON) {
+            wins++;
+        } else {
+            losses++;
+        }
     }
     
     /**

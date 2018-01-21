@@ -6,8 +6,8 @@ package blackjack;
  * 
  * @author Anthony Dickson.
  */
-public class AlwaysDouble extends AIPlayer {
-    public AlwaysDouble(Manager m) {
+public class AlwaysStand extends AIPlayer {
+    public AlwaysStand(Manager m) {
         super(m);
     }
 
