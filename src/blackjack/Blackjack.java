@@ -11,6 +11,7 @@ public class Blackjack {
        m.addPlayer(new RandomMove(m));
        m.addPlayer(new AlwaysDouble(m));
        m.addPlayer(new AlwaysStand(m));
+       m.addPlayer(new BasicStrategy(m));
        m.play();
    }    
 }

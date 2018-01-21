@@ -9,6 +9,8 @@ package blackjack;
 public class RandomMove extends AIPlayer {
     public RandomMove(Manager m) {
         super(m);
+
+        name = "HDF7823HDF&^*2";
     }
 
     @Override

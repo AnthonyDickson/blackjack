@@ -14,12 +14,13 @@ public class Manager {
     private static final double PAYOUT = 2.0;
     private static final boolean SILENT_MODE = true; // Suppresses output to stdout.
     // TESTING
-    private static final int NUM_TESTS = 100000;
+    private static final int NUM_TESTS = 100;
 
     private Deck deck;
     private ArrayList<Player> players;
     private Dealer dealer;
     private HashMap<Player, ArrayList<Card>> hands;
+    private HashMap<Player, Boolean> handSoft;
     private HashMap<Player, Integer> bets;
     private HashMap<Player, Integer> credits;
     private HashMap<Player, Status> states; 
@@ -40,6 +41,7 @@ public class Manager {
         players = new ArrayList<>();
         dealer = new Dealer(this);
         hands = new HashMap<>();
+        handSoft = new HashMap<>();
         bets = new HashMap<>();
         credits = new HashMap<>();
         states = new HashMap<>();
@@ -55,6 +57,7 @@ public class Manager {
 
         players.add(p);
         hands.put(p, new ArrayList<>());
+        handSoft.put(p, false);
         bets.put(p, 0);
         credits.put(p, 1000);
         print(p.getName() + " has joined the game!");
@@ -357,14 +360,26 @@ public class Manager {
 
             if (c.getRank() == Rank.ACE) {
                 hasAce = true;
+                handSoft.put(p, true);
             }
         }        
-
+        
         if (hasAce && value > 21) {
             value -= 10;
+            handSoft.put(p, false);
         }
 
         return value;
+    }
+
+    /**
+     * Returns whether or not the player's hand is 'soft' or 'hard'.
+     * 
+     * @param p The players hand who we should check.
+     * @return true if players hand is soft, false otherwise.
+     */
+    public boolean isHandSoft(Player p) {
+        return handSoft.get(p);
     }
 
     /** Get the dealer's face up card. */

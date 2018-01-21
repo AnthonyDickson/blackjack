@@ -9,6 +9,8 @@ package blackjack;
 public class AlwaysDouble extends AIPlayer {
     public AlwaysDouble(Manager m) {
         super(m);
+
+        name = "Deedee McDouble";
     }
 
     @Override

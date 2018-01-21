@@ -9,6 +9,8 @@ package blackjack;
 public class AlwaysStand extends AIPlayer {
     public AlwaysStand(Manager m) {
         super(m);
+
+        name = "Ilene Standing";
     }
 
     @Override
