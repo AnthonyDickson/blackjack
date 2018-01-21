@@ -13,6 +13,7 @@ public class Manager {
     Deck deck;
     ArrayList<Player> players;
     HashMap<Player, ArrayList<Card>> hands;
+    HashMap<Player, Integer> bets;
     HashMap<Player, Integer> scores;
 
     /** 
@@ -24,24 +25,43 @@ public class Manager {
         deck = new MultiDeck(4);
         players = new ArrayList<>();
         hands = new HashMap<>();
+        bets = new HashMap<>();
         scores = new HashMap<>();
 
-        players.add(new Dealer(this));
+        addPlayer(new Dealer(this));
     }
 
     public void addPlayer(Player p) {
         players.add(p);
+        hands.put(p, new ArrayList<>());
+        bets.put(p, 0);
+        scores.put(p, 1000);
+        System.out.println(p.getName() + " has joined the game!");
     }
 
     /** Starts a game of blackjack. */
     public void play() {
-        // deck.shuffle();
-        // dealCards();
-        // getBets();
+        deck.shuffle();
+        getBets();
+        dealCards();
         
         // for (Player p : players) {
         //     MOVES move = p.getMove();
         // }
+    }
+
+    private void getBets() {
+        for (Player p : players) {
+            bets.put(p, p.getBet());
+        }
+    }
+
+    private void dealCards() {
+        for (Player p : players) {
+            for (int i = 0; i < 2; i++) {
+                hands.get(p).add(deck.next());
+            }
+        }
     }
 
     /**

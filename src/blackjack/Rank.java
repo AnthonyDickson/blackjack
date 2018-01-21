@@ -2,92 +2,79 @@ package blackjack;
 
 /** A rank of a playing card. */
 public enum Rank { 
-    ACE     
-    { 
+    ACE { 
         @Override
         public String toString() { 
             return "Ace";      
         } 
     }, 
-    TWO     
-    { 
+    TWO { 
         @Override
         public String toString() { 
             return "Two";      
         } 
     }, 
-    THREE   
-    { 
+    THREE { 
         @Override
         public String toString() { 
             return "Three";    
         } 
     },                                
-    FOUR    
-    { 
+    FOUR { 
         @Override
         public String toString() { 
             return "Four";     
         } 
     }, 
-    FIVE    
-    { 
+    FIVE { 
         @Override
         public String toString() { 
             return "Five";     
         } 
     }, 
-    SIX     
-    { 
+    SIX { 
         @Override
         public String toString() { 
             return "Six";      
         } 
     },                                
-    SEVEN   
-    { 
+    SEVEN { 
         @Override
         public String toString() { 
             return "Seven";    
         } 
     }, 
-    EIGHT   
-    { 
+    EIGHT { 
         @Override
         public String toString() { 
             return "Eight";    
         } 
     }, 
-    NINE    
-    { 
+    NINE { 
         @Override
         public String toString() { 
             return "Nine";     
         } 
     }, 
-    TEN     
-    { 
+    TEN { 
         @Override
         public String toString() { 
             return "Ten";      
         } 
     }, 
-    JACK    
-    { 
+    JACK { 
         @Override
         public String toString() { 
             return "Jack";     
         } 
     }, 
-    QUEEN   
-    { 
+    QUEEN { 
         @Override
         public String toString() { 
             return "Queen";    
         } 
     }, 
-    KING    
-    { 
+    KING { 
         @Override
         public String toString() { 
             return "King";     

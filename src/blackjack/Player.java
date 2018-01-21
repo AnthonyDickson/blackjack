@@ -13,6 +13,13 @@ public abstract class Player {
     }
 
     /**
+     * Get the player's bet as requested by the manager.
+     * 
+     * @return the player's bet.
+     */
+    public abstract int getBet();
+
+    /**
      * Get the player's move as requested by the manager.
      * 
      * @return the player's move.
@@ -26,4 +33,11 @@ public abstract class Player {
      * @return whether or not the player will promote their ace.
      */
     public abstract boolean promotesAce(int value);
+
+    /**
+     * Get the player's name.
+     * 
+     * @return the player's name as a string.
+     */
+    public abstract String getName();
 }

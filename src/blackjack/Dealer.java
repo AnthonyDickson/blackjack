@@ -10,11 +10,23 @@ public class Dealer extends Player {
         super(m);
     }
 
+    @Override
+    public int getBet() {
+        return 0;
+    }
+
+    @Override
     public MOVES getMove() {
         return MOVES.STAND;
     }
-    
+
+    @Override
     public boolean promotesAce(int value) {
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return "Dealer";
     }
 }

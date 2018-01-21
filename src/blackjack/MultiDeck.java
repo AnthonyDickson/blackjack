@@ -18,7 +18,7 @@ public class MultiDeck extends Deck {
         i = 0;
         cards = new ArrayList<>(52 * numDecks);
 
-        for (int ii = 0; ii < numDecks; i++) {
+        for (int ii = 0; ii < numDecks; ii++) {
             addDeck();
         }
         
