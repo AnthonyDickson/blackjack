@@ -49,14 +49,13 @@ public class Manager {
 
     /** Starts a game of blackjack. */
     public void play() {
-        // while (true) {
-            System.out.println("\nStarting a new round of blackjack...");
-            shuffle();
-            getBets();
-            dealCards();
-            announceCards();
-            checkBlackjack();
-            handleMoves();
+        System.out.println("\nStarting a new round of blackjack...");
+        shuffle();
+        getBets();
+        dealCards();
+        announceCards();
+        checkBlackjack();
+        handleMoves();
     }
         
     /** Shuffle the deck. */
@@ -73,7 +72,6 @@ public class Manager {
         for (Player p : players) {
             bets.put(p, p.getBet());
             System.out.println(p.getName() + " has bet " + bets.get(p) + " credit(s)!");
-            states.put(p, Status.READY);
         }
     }
     
@@ -81,11 +79,11 @@ public class Manager {
     private void dealCards() {
         System.out.println("\nDealing cards...");
         
-        dealCards(dealer);
-
         for (Player p : players) {
             dealCards(p);
         }
+
+        dealCards(dealer);
     }
 
     /**
@@ -97,6 +95,8 @@ public class Manager {
         for (int i = 0; i < 2; i++) {
             hands.get(p).add(deck.next());
         }
+        
+        states.put(p, Status.READY);
     }
 
     /** Announce each player's hand, and the dealer's first card. */
@@ -232,23 +232,5 @@ public class Manager {
     /** Get the dealer's face up card. */
     public Card getDealerCard() {
         return hands.get(dealer).get(0);
-    }
-
-    /**
-     * Gets the player with the winning hand.
-     * 
-     * @return the winning player.
-     */
-    public Player getWinner() {
-        Player winner = null;
-        int max = -1;
-
-        for (Player p : players) {
-            if (handValue(p) > max) {
-                winner = p;
-            }
-        }
-
-        return winner;
     }
 }
