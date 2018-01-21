@@ -22,7 +22,14 @@ public class HumanPlayer extends Player {
     
     @Override
     public int getBet(int maxBet) {
-        return 0;
+        int bet = Integer.MAX_VALUE;
+        System.out.print("Enter your bet (max=" + maxBet + "): ");
+
+        while (bet < 1 || bet > maxBet) {
+            bet = in.nextInt();
+        }
+
+        return bet;
     }
     
     @Override
@@ -30,7 +37,7 @@ public class HumanPlayer extends Player {
         String move = "";
         System.out.println("Your hand: " + m.getHand(this));
         System.out.println("Your hand is worth: " + m.handValue(this));
-        System.out.println("Will you (h)it, (d)ouble down or (s)tand?");
+        System.out.print("Will you (h)it, (d)ouble down or (s)tand? ");
         move = in.nextLine();
         
         while (!move.equals("h") && !move.equals("d") && !move.equals("s")) {

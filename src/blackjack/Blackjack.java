@@ -9,6 +9,7 @@ public class Blackjack {
        Manager m = new Manager();
        m.addPlayer(new HumanPlayer(m));
        m.addPlayer(new RandomMove(m));
+       m.addPlayer(new AlwaysDouble(m));
        m.play();
    }    
 }
