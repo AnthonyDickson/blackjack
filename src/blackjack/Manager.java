@@ -8,14 +8,16 @@ import java.util.stream.Collectors;
  * Manager for a game of blackjack.
  */
 public class Manager { 
-    public static enum MOVES { SURRENDER, STAND, HIT, SPLIT, DOUBLE_DOWN };
+    public static enum Move { SURRENDER, STAND, HIT, SPLIT, DOUBLE_DOWN };
+    public static enum Status { READY, STAND, BUST, WON };
 
     private Deck deck;
     private ArrayList<Player> players;
     private Dealer dealer;
     private HashMap<Player, ArrayList<Card>> hands;
     private HashMap<Player, Integer> bets;
-    private HashMap<Player, Integer> scores;
+    private HashMap<Player, Integer> credits;
+    private HashMap<Player, Status> statuses; 
 
     /** 
      * Set up a game of blackjack.
@@ -28,16 +30,21 @@ public class Manager {
         dealer = new Dealer(this);
         hands = new HashMap<>();
         bets = new HashMap<>();
-        scores = new HashMap<>();
+        credits = new HashMap<>();
+        state = new HashMap<>();
 
         hands.put(dealer, new ArrayList<>());
     }
 
     public void addPlayer(Player p) {
+        if (players.size() == 8) {
+            return;
+        }
+
         players.add(p);
         hands.put(p, new ArrayList<>());
         bets.put(p, 0);
-        scores.put(p, 1000);
+        credits.put(p, 1000);
         System.out.println(p.getName() + " has joined the game!");
     }
 
@@ -49,8 +56,9 @@ public class Manager {
             getBets();
             dealCards();
             announceCards();
+            checkBlackjack();
             // for (Player p : players) {
-                //     MOVES move = p.getMove();
+                //     Move move = p.getMove();
                 // }            
         // }
     }
@@ -68,7 +76,8 @@ public class Manager {
 
         for (Player p : players) {
             bets.put(p, p.getBet());
-            System.out.println(p.getName() + " has bet " + bets.get(p) + " credits!");
+            System.out.println(p.getName() + " has bet " + bets.get(p) + " credit(s)!");
+            statuses.put(p, Status.READY);
         }
     }
     
@@ -104,6 +113,39 @@ public class Manager {
         }
     }
 
+    /** Check if anyone has blackjack. */
+    private void checkBlackjack() {
+        boolean dealerBlackjack = false;
+
+        if (hands.get(dealer).get(0).getRank() == Rank.ACE) {
+            System.out.println("Dealer has a face-up ace. Checking hole card...");
+
+            if (handValue(dealer) == 21) {
+                System.out.println("Dealer has blackjack!");
+                dealerBlackjack = true;
+            }
+        }
+
+        for (Player p : players) {
+            if (handValue(p) == 21) {
+                statuses.put(p, Status.WON);
+
+                if (dealerBlackjack) {
+                    System.out.println("Standoff!");
+                    credits.put(p, credits.get(p) + bets.get(p));
+                } else {
+                    int amount = (int)(1.5 * bets.get(p));
+                    credits.put(p, credits.get(p) + amount);                
+                    System.out.println(p.getName() + " has blackjack!");
+                    System.out.println(p.getName() + " has won " + amount + " credit(s)!");
+                }
+            } else if (dealerBlackjack) {
+                statuses.put(p, Status.BUST);
+                System.out.println(p.getName() + " has lost " + bets.get(p) + " credit(s).");
+            }          
+        }
+    }
+
     /**
      * Get the hand of cards for a given player.
      * 
@@ -116,8 +158,7 @@ public class Manager {
 
     /**
      * Computes the value of a hand of the given player. 
-     * Aces count as one by default unless the player signals they wish to 
-     * count one of their aces as eleven.
+     * Aces count for eleven unless the hand totals over 21.
      * 
      * @param p The player whose hand we should compute the value of.
      * @return The min value of the players hand.
@@ -134,11 +175,16 @@ public class Manager {
             }
         }        
 
-        if (hasAce && p.promotesAce(value)) {
-            value += 10;
+        if (hasAce && value > 21) {
+            value -= 10;
         }
 
         return value;
+    }
+
+    /** Get the dealer's face up card. */
+    public Card getDealerCard() {
+        return hands.get(dealer).get(0);
     }
 
     /**

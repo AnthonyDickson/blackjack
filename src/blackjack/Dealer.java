@@ -8,6 +8,8 @@ import blackjack.Manager.MOVES;
 public class Dealer extends Player {
     public Dealer(Manager m) {
         super(m);
+
+        name = "Dealer";
     }
 
     @Override
@@ -18,15 +20,5 @@ public class Dealer extends Player {
     @Override
     public MOVES getMove() {
         return MOVES.STAND;
-    }
-
-    @Override
-    public boolean promotesAce(int value) {
-        return true;
-    }
-
-    @Override
-    public String getName() {
-        return "Dealer";
     }
 }

@@ -27,14 +27,4 @@ public class HumanPlayer extends Player {
     public MOVES getMove() {
         return MOVES.STAND;
     }
-
-    @Override
-    public boolean promotesAce(int value) {
-        return true;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
 }

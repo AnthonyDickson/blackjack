@@ -25,6 +25,8 @@ public class AIPlayer extends Player {
 
     public AIPlayer(Manager m) {
         super(m);
+
+        this.name = names[r.nextInt(names.length)];
     }
 
     @Override
@@ -35,15 +37,5 @@ public class AIPlayer extends Player {
     @Override
     public MOVES getMove() {
         return MOVES.STAND;
-    }
-
-    @Override
-    public boolean promotesAce(int value) {
-        return true;
-    }
-
-    @Override
-    public String getName() {
-        return names[r.nextInt(names.length)];
     }
 }

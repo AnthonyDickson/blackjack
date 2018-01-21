@@ -7,6 +7,8 @@ import blackjack.Manager.MOVES;
  */
 public abstract class Player {
     final Manager m;
+
+    String name;
     
     public Player(Manager m) {
         this.m = m;
@@ -27,17 +29,11 @@ public abstract class Player {
     public abstract MOVES getMove();
 
     /**
-     * Whether or not the player will promote their ace to have a value of 11.
-     * 
-     * @param value The hand value before promoting the ace.
-     * @return whether or not the player will promote their ace.
-     */
-    public abstract boolean promotesAce(int value);
-
-    /**
      * Get the player's name.
      * 
      * @return the player's name as a string.
      */
-    public abstract String getName();
+    public String getName() {
+        return name;
+    }
 }

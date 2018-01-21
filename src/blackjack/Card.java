@@ -11,7 +11,6 @@ public class Card {
     public final static HashMap<Rank, Integer> VALUES;
     static {
         VALUES = new HashMap<>();
-        VALUES.put(Rank.ACE, 1);
         VALUES.put(Rank.TWO, 2);
         VALUES.put(Rank.THREE, 3);
         VALUES.put(Rank.FOUR, 4);
@@ -24,6 +23,7 @@ public class Card {
         VALUES.put(Rank.JACK, 10);
         VALUES.put(Rank.QUEEN, 10);
         VALUES.put(Rank.KING, 10);
+        VALUES.put(Rank.ACE, 11);
     } 
 
     private Rank rank;
